@@ -3,7 +3,6 @@ local luautil = require("__core__/lualib/util")
 local commons = require("scripts.commons")
 local tools = require("scripts.tools")
 local Runtime = require("scripts.runtime")
-local commons = require("scripts.commons")
 
 local comm = {}
 
@@ -130,7 +129,9 @@ function comm.purge()
             end
         end
         for _, channel in pairs(to_remove) do
-            channel.router.destroy()
+            if channel.router.valid then
+                channel.router.destroy()
+            end
             cctx.name_channels[channel.name] = nil
         end
     end
@@ -516,9 +517,9 @@ tools.on_gui_click(np("add"),
         if not channel_name_list then return end
 
         local index = channel_name_list.selected_index
-        if not index then return end
+        if not index or index == 0 then return end
 
-        local channel_name = channel_name_list.items[channel_name_list.selected_index]
+        local channel_name = channel_name_list.items[index]
         local cctx = comm.get_context(player.force_index, false)
         if not cctx then return end
 
@@ -698,7 +699,11 @@ function comm.sort_by_category(signals)
             local f = type_to_proto[type]
             if f then
                 local proto, prefix, suffix = f(name, quality)
-                order = prefix .. proto.group.order .. " " .. proto.subgroup.order .. " " .. proto.order .. suffix
+                if proto then
+                    order = prefix .. proto.group.order .. " " .. proto.subgroup.order .. " " .. proto.order .. suffix
+                else
+                    order = "_z " .. type .. " " .. name
+                end
             else
                 order = "_z " .. type .. " " .. name
             end
@@ -835,12 +840,10 @@ function comm.update(player)
                     close_button.tags = { channel_name = name }
 
                     local red_signals = cb.get_circuit_network(defines.wire_connector_id.circuit_red)
-                    ---@cast red_signals -nil
-                    display(red_signals.signals, red_button)
+                    display(red_signals and red_signals.signals, red_button)
 
                     local green_signals = cb.get_circuit_network(defines.wire_connector_id.circuit_green)
-                    ---@cast green_signals -nil
-                    display(green_signals.signals, green_button)
+                    display(green_signals and green_signals.signals, green_button)
 
                     signal_panel.add { type = "line", direction = "horizontal" }
                     signal_panel.style.horizontally_stretchable = true
