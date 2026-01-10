@@ -1617,13 +1617,6 @@ local function migration_2_0_4()
     end
 end
 
-local function migration_2_0_4()
-    procinfos = storage.procinfos --[[@as ProcInfoTable]]
-    for _, procinfo in pairs(procinfos) do
-        editor.draw_sprite(procinfo)
-    end
-end
-
 local function migration_2_0_12()
     procinfos = storage.procinfos --[[@as ProcInfoTable]]
 
@@ -1686,8 +1679,8 @@ local function all_pack(player_index)
     local player = game.players[player_index]
     local force = player.force
     local used = {}
-    for _, player in pairs(game.players) do
-        if player.surface then used[player.surface.name] = true end
+    for _, p in pairs(game.players) do
+        if p.surface then used[p.surface.name] = true end
     end
 
     local pack_count = 0
@@ -1696,7 +1689,7 @@ local function all_pack(player_index)
         if procinfo.processor and procinfo.processor.valid and
             procinfo.processor.force == force then
             local surface = procinfo.surface
-            if surface and surface.valid and not used[surface.valid] then
+            if surface and surface.valid and not used[surface.name] then
                 if not procinfo.is_packed then
                     editor.set_packed(procinfo, true)
                     editor.delete_surface(procinfo)

@@ -163,7 +163,7 @@ function display.create(type)
         }
     elseif type == display_text_type then
         return {
-            type = display.types.sprite,
+            type = display.types.text,
             scale = 1,
             offsetx = 0,
             offsety = 0,

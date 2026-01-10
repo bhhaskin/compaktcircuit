@@ -77,7 +77,7 @@ function input.create(type)
         }
     elseif type == input.types.slider then
         return {
-            type = input.types.sprite,
+            type = input.types.slider,
             label = "",
             min = nil,
             max = nil,
@@ -86,18 +86,18 @@ function input.create(type)
             default = 0
         }
     elseif type == input.types.toggle then
-        return { type = input.types.sprite, label = "", signal = nil }
+        return { type = input.types.toggle, label = "", signal = nil }
     elseif type == input.types.drop_down then
         return {
-            type = input.types.sprite,
+            type = input.types.drop_down,
             label = "",
             signal = nil,
             labels = nil
         }
     elseif type == input.types.choose_signals then
-        return { type = input.types.sprite, label = "", count = 1 }
+        return { type = input.types.choose_signals, label = "", count = 1 }
     elseif type == input.types.choose_signals_with_count then
-        return { type = input.types.sprite, label = "", count = 1 }
+        return { type = input.types.choose_signals_with_count, label = "", count = 1 }
     elseif type == input.types.comm then
         return {
             type = input.types.comm,
